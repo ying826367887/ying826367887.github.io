@@ -1,0 +1,78 @@
+<html>
+    <head></head>
+    <body>
+        <canvas id="myCanvas" width="800" height="600"></canvas>
+    </body>
+    <script>
+        var canvas = document.querySelector('#myCanvas');
+        var ctx = canvas.getContext('2d');
+        
+        // 设置canvas的宽高
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.style.backgroundColor = 'black';
+        
+        // 监听鼠标
+        var mouse = {x: null, y: null};
+        
+        document.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+        
+        // 存储所有的星星
+        var stars = [];
+        
+        // 星星的数量
+        var numStars = 200;
+        
+        // 星星的构造函数
+        function Star() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 2;
+            this.speed = Math.random() * .05;
+            this.speedX = (Math.random() - 0.5) * 2;
+            this.speedY = (Math.random() - 0.5) * 2;
+        }
+        
+        // 创建星星
+        for(var i = 0; i < numStars; i++) {
+            stars.push(new Star());
+        }
+        
+        function animate() {
+            // 清空画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+            for(var i = 0; i < numStars; i++) {
+                var star = stars[i];
+                
+                // 绘制星星
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFF';
+                ctx.fill();
+                
+                // 移动星星
+                var dis = Math.sqrt(Math.pow(star.x - mouse.x, 2) + Math.pow(star.y - mouse.y, 2));
+                if(dis < 100) {
+                    star.x -= star.speedX;
+                    star.y -= star.speedY;
+                } else {
+                    star.y += star.speed;
+                }
+                
+                // 判断星星是否移出画布
+                if(star.y > canvas.height) {
+                    star.y = 0;
+                    star.x = Math.random() * canvas.width;
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        </script>
+</html>
